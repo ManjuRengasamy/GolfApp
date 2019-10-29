@@ -1,0 +1,16 @@
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.deps.json
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.runtimeconfig.json
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.runtimeconfig.dev.json
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.dll
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.csprojAssemblyReference.cache
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.csproj.CoreCompileInputs.cache
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.RazorAssemblyInfo.cache
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.RazorAssemblyInfo.cs
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.AssemblyInfoInputs.cache
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.AssemblyInfo.cs
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.RazorTargetAssemblyInfo.cache
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.pdb
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\bin\Debug\netcoreapp2.1\GolfApplication.Views.dll
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.dll
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.pdb
+C:\Users\admin\source\repos\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.csproj.CopyComplete
