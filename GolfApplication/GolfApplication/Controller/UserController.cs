@@ -11,10 +11,7 @@ namespace GolfApplication.Controller
 {
     public class UserController : ControllerBase
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+
         #region GetUserType
         [HttpGet, Route("UserType")]
         public IActionResult GetUserType()
