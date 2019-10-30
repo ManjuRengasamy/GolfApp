@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GolfApplication.Controller
 {
+
     public class UserController : ControllerBase
     {
 

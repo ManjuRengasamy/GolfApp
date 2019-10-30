@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.ApplicationBlocks.Data;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,5 +36,25 @@ namespace GolfApplication.Data
         }
         #endregion
 
+        #region ErrorLog
+        public static string SaveErrorLog(string FunctionName, string ErrorMessage)
+        {
+            try
+            {
+                string ConnectionString = Common.GetConnectionString();
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                parameters.Add(new SqlParameter("@FunctionName", FunctionName));
+                parameters.Add(new SqlParameter("@ErrorMessage", ErrorMessage));
+
+                string rowsAffected = SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "spSaveErrorLog", parameters.ToArray()).ToString();
+                return rowsAffected;
+            }
+            catch (Exception e)
+            {
+                //loggerErr.Error(e.Message + " - " + e.StackTrace);
+                throw e;
+            }
+        }
+        #endregion
     }
 }
