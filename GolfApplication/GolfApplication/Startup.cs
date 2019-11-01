@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GolfApplication.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -72,7 +73,12 @@ namespace GolfApplication
                     Name = "Authorization",
                     Type = "apiKey"
                 });
-                //  c.OperationFilter<SecurityRequirementsOperationFilter>();
+                // c.OperationFilter<SecurityRequirementsOperationFilter>();
+               c.OperationFilter<FormFileSwaggerFilter>();
+               // c.OperationFilter<AddFileParamTypesOperationFilter>();
+              //  c.OperationFilter<MyCorp.Swashbuckle.FormFileSwaggerFilter<MyCorp.Attr.ValidateMimeMultipartContentFilter>>();
+
+
 
                 c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
                 { "Bearer", Enumerable.Empty<string>() },

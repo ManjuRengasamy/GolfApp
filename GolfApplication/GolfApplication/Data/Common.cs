@@ -1,4 +1,6 @@
 ﻿using Microsoft.ApplicationBlocks.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -56,5 +58,23 @@ namespace GolfApplication.Data
             }
         }
         #endregion
+
+        #region uploadFile       
+        public static string CreateMediaItem([FromForm]IFormFile file)
+        {
+            try
+            {
+                var FileURL = AzureStorage.UploadImage(file, file.FileName + "." + file.ContentType, "videosandimages").Result;
+                return FileURL;
+            }
+            catch (Exception e)
+            {
+                //loggerErr.Error(e.Message + " - " + e.StackTrace);
+                throw e;
+            }
+
+        }
+        #endregion
+
     }
 }
