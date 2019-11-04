@@ -52,6 +52,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
+                string SaveErrorLog = Data.Common.SaveErrorLog("userType", e.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
         }
@@ -98,7 +99,7 @@ namespace GolfApplication.Controller
                     }
                     else
                     {
-                        return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row } });
+                        return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row.ToString() } });
                     }
 
                 }
@@ -109,6 +110,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
+                string SaveErrorLog = Data.Common.SaveErrorLog("createUser", e.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
         }
@@ -119,42 +121,51 @@ namespace GolfApplication.Controller
         [HttpPut, Route("updateUser")]
         public IActionResult updateUser([FromBody]createUser userUpdate)
         {
-            List<createUser> userList = new List<createUser>();
-            if (userUpdate.userId <= 0 || userUpdate.userId == null)
+            try
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter First Name" } });
-            }
-            else if (userUpdate.firstName == "" || userUpdate.firstName == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter First Name" } });
-            }
-            else if (userUpdate.password == "" || userUpdate.password == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Password" } });
-            }
-            else if (userUpdate.email == "" || userUpdate.email == "string" || userUpdate.email == null)
-            {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Email" } });
-            }
-
-            Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-            Match match = regex.Match(userUpdate.email);
-            if (match.Success)
-            {
-                string row = Data.User.updateUser(userUpdate);
-
-                if (row == "Success")
+            
+                List<createUser> userList = new List<createUser>();
+                if (userUpdate.userId <= 0 || userUpdate.userId == null)
                 {
-                    return StatusCode((int)HttpStatusCode.OK, "Updated Successfully");
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter First Name" } });
+                }
+                else if (userUpdate.firstName == "" || userUpdate.firstName == null)
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter First Name" } });
+                }
+                else if (userUpdate.password == "" || userUpdate.password == null)
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Password" } });
+                }
+                else if (userUpdate.email == "" || userUpdate.email == "string" || userUpdate.email == null)
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Email" } });
+                }
+
+                Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                Match match = regex.Match(userUpdate.email);
+                if (match.Success)
+                {
+                    string row = Data.User.updateUser(userUpdate);
+
+                    if (row == "Success")
+                    {
+                        return StatusCode((int)HttpStatusCode.OK, "Updated Successfully");
+                    }
+                    else
+                    {
+                        return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row } });
+                    }
                 }
                 else
                 {
-                    return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row } });
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a valid Email" } });
                 }
             }
-            else
+            catch (Exception e)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a valid Email" } });
+                string SaveErrorLog = Data.Common.SaveErrorLog("updateUser", e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
         }
         #endregion
@@ -179,6 +190,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
+                string SaveErrorLog = Data.Common.SaveErrorLog("deleteUser", e.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
         }
@@ -231,7 +243,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                //string SaveErrorLog = Data.Common.SaveErrorLog("selectUserById", e.Message);
+                string SaveErrorLog = Data.Common.SaveErrorLog("selectUserById", e.Message);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
@@ -291,7 +303,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                // string SaveErrorLog = Data.Common.SaveErrorLog("listUser", e.Message);
+                string SaveErrorLog = Data.Common.SaveErrorLog("listUser", e.Message);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
@@ -337,7 +349,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                //  string SaveErrorLog = Data.Common.SaveErrorLog("UpdatePassword", e.Message);
+                string SaveErrorLog = Data.Common.SaveErrorLog("UpdatePassword", e.Message);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
@@ -378,7 +390,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                //string SaveErrorLog = Data.Common.SaveErrorLog("generateOTP", e.Message);
+                string SaveErrorLog = Data.Common.SaveErrorLog("generateOTP", e.Message);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
@@ -416,7 +428,7 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                // string SaveErrorLog = Data.Common.SaveErrorLog("verifyOTP", e.Message);
+                string SaveErrorLog = Data.Common.SaveErrorLog("verifyOTP", e.Message);
 
                 return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
             }
