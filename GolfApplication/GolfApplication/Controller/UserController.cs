@@ -17,11 +17,11 @@ namespace GolfApplication.Controller
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
 
     public class UserController : ControllerBase
     {
-
+       
         #region GetUserType
         [HttpGet, Route("userType")]
         public IActionResult getUserType()
@@ -58,16 +58,16 @@ namespace GolfApplication.Controller
         #endregion
 
         #region createUser
-        [HttpPost, Route("createUser")]       
-
-        public IActionResult createUser([FromBody]createUser userCreate, IFormFile profileImages)
+        [HttpPost, Route("createUser")]
+        [AllowAnonymous]
+        public IActionResult createUser(createUser userCreate)
         {
             try
-            {
-                userCreate.profileImage= Common.CreateMediaItem(profileImages);
+            {                
+                userCreate.profileImage = Global.fileurl;
 
-               // string profileImg = createUserProfile(profileImages);
                 List<createUser> userList = new List<createUser>();
+
                 if (userCreate.firstName == "" || userCreate.firstName == null)
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter First Name" } });
@@ -79,6 +79,10 @@ namespace GolfApplication.Controller
                 else if (userCreate.email == "" || userCreate.email == "string" || userCreate.email == null)
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Email" } });
+                }
+                else if (userCreate.userTypeId == "" || userCreate.userTypeId == "string" || userCreate.userTypeId == null)
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter userTypeId" } });
                 }
 
                 Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
@@ -293,86 +297,27 @@ namespace GolfApplication.Controller
             }
         }
         #endregion
-
-        #region login
-        [HttpPost, Route("login")]
-        public IActionResult login(string email, string password)
-        {
-            List<getUser> userList = new List<getUser>();
-            try
-            {
-                Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                Match match = regex.Match(email);
-
-                if (match.Success)
-                {
-                    DataTable dt = Data.User.login(email, password);
-                    if ((int)dt.Rows[0]["userId"] >= 0)
-                    {
-                        getUser user = new getUser();
-                        user.userId = (int)dt.Rows[0]["userId"];
-                        user.firstName = (dt.Rows[0]["firstName"] == DBNull.Value ? "" : dt.Rows[0]["firstName"].ToString());
-                        user.lastName = (dt.Rows[0]["lastName"] == DBNull.Value ? "" : dt.Rows[0]["lastName"].ToString());
-                        user.gender = (dt.Rows[0]["gender"] == DBNull.Value ? "" : dt.Rows[0]["gender"].ToString());
-                        user.dob = (dt.Rows[0]["dob"] == DBNull.Value ? "" : dt.Rows[0]["dob"].ToString());
-                        user.email = (dt.Rows[0]["email"] == DBNull.Value ? "" : dt.Rows[0]["email"].ToString());
-                        user.password = (dt.Rows[0]["password"] == DBNull.Value ? "" : dt.Rows[0]["password"].ToString());
-                        user.phoneNumber = (dt.Rows[0]["phoneNumber"] == DBNull.Value ? "" : dt.Rows[0]["phoneNumber"].ToString());
-                        user.countryId = (dt.Rows[0]["countryId"] == DBNull.Value ? 0 : (int)dt.Rows[0]["countryId"]);
-                        user.stateId = (dt.Rows[0]["stateId"] == DBNull.Value ? 0 : (int)dt.Rows[0]["stateId"]);
-                        user.city = (dt.Rows[0]["city"] == DBNull.Value ? "" : dt.Rows[0]["city"].ToString());
-                        user.address = (dt.Rows[0]["address"] == DBNull.Value ? "" : dt.Rows[0]["address"].ToString());
-                        user.pinCode = (dt.Rows[0]["pinCode"] == DBNull.Value ? "" : dt.Rows[0]["pinCode"].ToString());
-                        // user.profileImage = (dt.Rows[0]["profileImage"] == DBNull.Value ? "" : dt.Rows[0]["profileImage"].ToString());
-                        user.isEmailNotification = (dt.Rows[0]["isEmailNotification"] == DBNull.Value ? false : (bool)dt.Rows[0]["isEmailNotification"]);
-                        user.isEmailVerified = (dt.Rows[0]["isEmailVerified"] == DBNull.Value ? false : (bool)dt.Rows[0]["isEmailVerified"]);
-                        user.isSMSNotification = (dt.Rows[0]["isSMSNotification"] == DBNull.Value ? false : (bool)dt.Rows[0]["isSMSNotification"]);
-                        user.userCreatedDate = (dt.Rows[0]["userCreatedDate"] == DBNull.Value ? "" : dt.Rows[0]["userCreatedDate"].ToString());
-                        user.isPublicProfile = (dt.Rows[0]["isPublicProfile"] == DBNull.Value ? false : (bool)dt.Rows[0]["isPublicProfile"]);
-                        user.userUpdatedDate = (dt.Rows[0]["userUpdatedDate"] == DBNull.Value ? "" : dt.Rows[0]["userUpdatedDate"].ToString());
-                        user.userCreatedDate = (dt.Rows[0]["passwordUpdatedDate"] == DBNull.Value ? "" : dt.Rows[0]["passwordUpdatedDate"].ToString());
-                        userList.Add(user);
-                        return StatusCode((int)HttpStatusCode.OK, new { user });
-                    }
-                    else
-                    {
-                        return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = dt.Rows[0]["ErrorMessage"].ToString() } });
-                    }
-                }
-
-                else
-                {
-                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a valid Email" } });
-                }
-            }
-
-            catch (Exception e)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message.ToString() } });
-            }
-        }
-        #endregion
-
+            
         #region updatePassword
         [HttpPut, Route("updatePassword")]
-        public IActionResult updatePassword(int OTPValue, string email, string password)
+        public IActionResult updatePassword(int OTPValue, [FromBody]Login login)
         {
             try
             {
-                if (password == "" || password == null)
+                if (login.password == "" || login.password == null)
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Password" } });
                 }
-                else if (email == "" || email == null)
+                else if (login.email == "" || login.email == null)
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter Email" } });
                 }
 
                 Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                Match match = regex.Match(email);
+                Match match = regex.Match(login.email);
                 if (match.Success)
                 {
-                    string row = Data.User.updatePassword(OTPValue, email, password);
+                    string row = Data.User.updatePassword(OTPValue, login);
 
                     if (row == "Success")
                     {
@@ -401,6 +346,7 @@ namespace GolfApplication.Controller
 
         #region GenerateOTP
         [HttpPut, Route("generateOTP")]
+        [AllowAnonymous]
         public IActionResult generateOTP(string email, string type)
         {
             try
@@ -441,6 +387,7 @@ namespace GolfApplication.Controller
 
         #region verifyOTP
         [HttpPut, Route("verifyOTP")]
+        [AllowAnonymous]
         public IActionResult verifyOTP(int OTPValue, string email, string type)
         {
             try
@@ -475,6 +422,70 @@ namespace GolfApplication.Controller
             }
         }
         #endregion
+
+
+        //#region login
+        //[HttpPost, Route("login")]
+        //public IActionResult login(string email, string password)
+        //{
+        //    List<getUser> userList = new List<getUser>();
+        //    try
+        //    {
+        //        Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+        //        Match match = regex.Match(email);
+
+        //        if (match.Success)
+        //        {
+        //            DataSet ds = Data.User.login(email, password);
+        //            DataTable dt0 = ds.Tables[0];
+
+        //            if (dt0.Rows[0]["ErrorMessage"].ToString() == "Success")
+        //            {
+        //                DataTable dt = ds.Tables[1];
+
+        //                getUser user = new getUser();
+        //                user.userId = (int)dt.Rows[1]["userId"];
+        //                user.firstName = (dt.Rows[1]["firstName"] == DBNull.Value ? "" : dt.Rows[1]["firstName"].ToString());
+        //                user.lastName = (dt.Rows[1]["lastName"] == DBNull.Value ? "" : dt.Rows[1]["lastName"].ToString());
+        //                user.gender = (dt.Rows[1]["gender"] == DBNull.Value ? "" : dt.Rows[1]["gender"].ToString());
+        //                user.dob = (dt.Rows[1]["dob"] == DBNull.Value ? "" : dt.Rows[1]["dob"].ToString());
+        //                user.email = (dt.Rows[1]["email"] == DBNull.Value ? "" : dt.Rows[1]["email"].ToString());
+        //                user.password = (dt.Rows[1]["password"] == DBNull.Value ? "" : dt.Rows[1]["password"].ToString());
+        //                user.phoneNumber = (dt.Rows[1]["phoneNumber"] == DBNull.Value ? "" : dt.Rows[1]["phoneNumber"].ToString());
+        //                user.countryId = (dt.Rows[1]["countryId"] == DBNull.Value ? 0 : (int)dt.Rows[1]["countryId"]);
+        //                user.stateId = (dt.Rows[1]["stateId"] == DBNull.Value ? 0 : (int)dt.Rows[1]["stateId"]);
+        //                user.city = (dt.Rows[1]["city"] == DBNull.Value ? "" : dt.Rows[1]["city"].ToString());
+        //                user.address = (dt.Rows[1]["address"] == DBNull.Value ? "" : dt.Rows[1]["address"].ToString());
+        //                user.pinCode = (dt.Rows[1]["pinCode"] == DBNull.Value ? "" : dt.Rows[1]["pinCode"].ToString());
+        //                // user.profileImage = (dt.Rows[1]["profileImage"] == DBNull.Value ? "" : dt.Rows[1]["profileImage"].ToString());
+        //                user.isEmailNotification = (dt.Rows[1]["isEmailNotification"] == DBNull.Value ? false : (bool)dt.Rows[1]["isEmailNotification"]);
+        //                user.isEmailVerified = (dt.Rows[1]["isEmailVerified"] == DBNull.Value ? false : (bool)dt.Rows[1]["isEmailVerified"]);
+        //                user.isSMSNotification = (dt.Rows[1]["isSMSNotification"] == DBNull.Value ? false : (bool)dt.Rows[1]["isSMSNotification"]);
+        //                user.userCreatedDate = (dt.Rows[1]["userCreatedDate"] == DBNull.Value ? "" : dt.Rows[1]["userCreatedDate"].ToString());
+        //                user.isPublicProfile = (dt.Rows[1]["isPublicProfile"] == DBNull.Value ? false : (bool)dt.Rows[1]["isPublicProfile"]);
+        //                user.userUpdatedDate = (dt.Rows[1]["userUpdatedDate"] == DBNull.Value ? "" : dt.Rows[1]["userUpdatedDate"].ToString());
+        //                user.userCreatedDate = (dt.Rows[1]["passwordUpdatedDate"] == DBNull.Value ? "" : dt.Rows[1]["passwordUpdatedDate"].ToString());
+        //                userList.Add(user);
+        //                return StatusCode((int)HttpStatusCode.OK, new { user });
+        //            }
+        //            else
+        //            {
+        //                return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = dt0.Rows[0]["ErrorMessage"].ToString() } });
+        //            }
+        //        }
+
+        //        else
+        //        {
+        //            return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a valid Email" } });
+        //        }
+        //    }
+
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message.ToString() } });
+        //    }
+        //}
+        //#endregion
 
     }
 }

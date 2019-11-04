@@ -73,6 +73,8 @@ namespace GolfApplication.Data
             {
                 string ConnectionString = Common.GetConnectionString();
 
+                var encryptPassword = Common.EncryptData(userCreate.password);
+
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter("@firstName", userCreate.firstName));
                 parameters.Add(new SqlParameter("@lastName", userCreate.lastName));
@@ -81,7 +83,7 @@ namespace GolfApplication.Data
                 parameters.Add(new SqlParameter("@dob", Convert.ToDateTime(userCreate.dob)));
                 parameters.Add(new SqlParameter("@profileImage", userCreate.profileImage));
                 parameters.Add(new SqlParameter("@phoneNumber", userCreate.phoneNumber));
-                parameters.Add(new SqlParameter("@password", userCreate.password));
+                parameters.Add(new SqlParameter("@password", encryptPassword));
                 parameters.Add(new SqlParameter("@countryId", userCreate.countryId));
                 parameters.Add(new SqlParameter("@stateId", userCreate.stateId));
                 parameters.Add(new SqlParameter("@city", userCreate.city));
@@ -194,18 +196,20 @@ namespace GolfApplication.Data
             }
         }
 
-        public static DataTable login(string email, string password)
+        public static DataSet login([FromBody]Login userlogin)
         {
             try
             {
                 string ConnectionString = Common.GetConnectionString();
+                var encryptPassword = Common.EncryptData(userlogin.password);
                 List<SqlParameter> parameters = new List<SqlParameter>();
-                parameters.Add(new SqlParameter("@Email", email));
-                parameters.Add(new SqlParameter("@Password", password));
-                DataTable dt = new DataTable();
-                using (dt = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "spLogin", parameters.ToArray()).Tables[0])
+                parameters.Add(new SqlParameter("@Email", userlogin.email));
+                parameters.Add(new SqlParameter("@Password", encryptPassword));
+
+                DataSet ds = new DataSet();
+                using (ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "spLogin", parameters.ToArray()))
                 {
-                    return dt;
+                    return ds;
                 }
             }
             catch (Exception e)
@@ -214,13 +218,14 @@ namespace GolfApplication.Data
             }
         }
 
-        public static string updatePassword(int OTPValue, string email, string password)
+        public static string updatePassword(int OTPValue, [FromBody]Login userlogin)
         {
 
             List<SqlParameter> parameters = new List<SqlParameter>();
+            var encryptPassword = Common.EncryptData(userlogin.password);
             parameters.Add(new SqlParameter("@OTPValue", OTPValue));
-            parameters.Add(new SqlParameter("@email", email));
-            parameters.Add(new SqlParameter("@password", password));
+            parameters.Add(new SqlParameter("@email", userlogin.email));
+            parameters.Add(new SqlParameter("@password", encryptPassword));
 
             try
             {

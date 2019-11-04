@@ -30,3 +30,4 @@ D:\Manju\Projects\GolfApp\GolfApp\GolfApplication\GolfApplication\obj\Debug\netc
 D:\Manju\Projects\GolfApp\GolfApp\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.pdb
 D:\Manju\Projects\GolfApp\GolfApp\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.csproj.CopyComplete
 D:\Manju\Projects\GolfApp\GolfApp\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\GolfApplication.csprojAssemblyReference.cache
+D:\Manju\Projects\GolfApp\GolfApp\GolfApplication\GolfApplication\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace GolfApplication.Models
 {
+    public class Login
+    {
+        public string email { get; set; }
+        public string password { get; set; }
+    }
+
     public class UserType
     {
         public int userTypeId { get; set; }
@@ -51,5 +57,10 @@ namespace GolfApplication.Models
     public class userList : getUser
     {
         public string userType { get; set; }
+    }
+
+    class Global
+    {
+        public static string fileurl;
     }
 }

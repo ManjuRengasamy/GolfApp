@@ -35,8 +35,27 @@ namespace GolfApplication
             //    options.MinimumSameSitePolicy = SameSiteMode.None;
             //});
 
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            //for Session
+            //services.AddSession(options =>
+            //{
+            //    options.Cookie.Name = ".AdventureWorks.Session";
+            //    options.IdleTimeout = TimeSpan.FromSeconds(10);
+            //    options.Cookie.IsEssential = true;
+            //});
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                //options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+            });
+
 
             services.AddCors(options =>
             {
@@ -106,6 +125,7 @@ namespace GolfApplication
 
             app.UseMvc();
 
+            app.UseSession();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
