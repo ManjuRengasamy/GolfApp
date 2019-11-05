@@ -24,6 +24,7 @@ namespace GolfApplication.Controller
        
         #region GetUserType
         [HttpGet, Route("userType")]
+        [AllowAnonymous]
         public IActionResult getUserType()
         {
             List<UserType> userList = new List<UserType>();
