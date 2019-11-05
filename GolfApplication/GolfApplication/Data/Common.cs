@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GolfApplication.Data
@@ -66,11 +67,12 @@ namespace GolfApplication.Data
         {
             try
             {
-                string[] strFilename = file.FileName.Split('.');
+                string Exceptsymbols = Regex.Replace(file.FileName, @"[^.0-9a-zA-Z]+", "");
+                string[] strFilename = Exceptsymbols.Split('.');
 
                 string Filename = strFilename[0] + "_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." + strFilename[1];
 
-                var FileURL = AzureStorage.UploadImage(file, Filename, "videosandimages").Result;  //+ "." + file.ContentType
+               var FileURL = AzureStorage.UploadImage(file, Filename, "videosandimages").Result;  //+ "." + file.ContentType
                 return FileURL;
             }
             catch (Exception e)

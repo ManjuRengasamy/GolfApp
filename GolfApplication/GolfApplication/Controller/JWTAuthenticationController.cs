@@ -88,7 +88,7 @@ namespace GolfApplication.Controller
                             user.gender = (dt.Rows[0]["gender"] == DBNull.Value ? "" : dt.Rows[0]["gender"].ToString());
                             user.userType = (dt.Rows[0]["userType"] == DBNull.Value ? "" : dt.Rows[0]["userType"].ToString());
                             user.email = (dt.Rows[0]["email"] == DBNull.Value ? "" : dt.Rows[0]["email"].ToString());
-                            user.password = (dt.Rows[0]["password"] == DBNull.Value ? "" : dt.Rows[0]["password"].ToString());
+                            //user.password = (dt.Rows[0]["password"] == DBNull.Value ? "" : dt.Rows[0]["password"].ToString());
                             user.phoneNumber = (dt.Rows[0]["phoneNumber"] == DBNull.Value ? "" : dt.Rows[0]["phoneNumber"].ToString());
                             user.countryId = (dt.Rows[0]["countryId"] == DBNull.Value ? 0 : (int)dt.Rows[0]["countryId"]);
                             user.stateId = (dt.Rows[0]["stateId"] == DBNull.Value ? 0 : (int)dt.Rows[0]["stateId"]);

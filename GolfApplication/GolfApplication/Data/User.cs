@@ -108,6 +108,7 @@ namespace GolfApplication.Data
             try
             {
                 string ConnectionString = Common.GetConnectionString();
+                var encryptPassword = Common.EncryptData(userCreate.password);
 
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter("@userId", userCreate.userId));
@@ -118,7 +119,7 @@ namespace GolfApplication.Data
                 parameters.Add(new SqlParameter("@dob", Convert.ToDateTime(userCreate.dob)));
                 parameters.Add(new SqlParameter("@profileImage", userCreate.profileImage));
                 parameters.Add(new SqlParameter("@phoneNumber", userCreate.phoneNumber));
-                parameters.Add(new SqlParameter("@password", userCreate.password));
+                parameters.Add(new SqlParameter("@password", encryptPassword));
                 parameters.Add(new SqlParameter("@countryId", userCreate.countryId));
                 parameters.Add(new SqlParameter("@stateId", userCreate.stateId));
                 parameters.Add(new SqlParameter("@city", userCreate.city));
@@ -219,13 +220,13 @@ namespace GolfApplication.Data
             }
         }
 
-        public static string updatePassword(int OTPValue, [FromBody]Login userlogin)
+        public static string updatePassword([FromBody]updatePassword updatePassword)
         {
+            var encryptPassword = Common.EncryptData(updatePassword.password);
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            var encryptPassword = Common.EncryptData(userlogin.password);
-            parameters.Add(new SqlParameter("@OTPValue", OTPValue));
-            parameters.Add(new SqlParameter("@email", userlogin.email));
+            List<SqlParameter> parameters = new List<SqlParameter>();            
+            parameters.Add(new SqlParameter("@OTPValue", updatePassword.OTPValue));
+            parameters.Add(new SqlParameter("@email", updatePassword.email));
             parameters.Add(new SqlParameter("@password", encryptPassword));
 
             try
@@ -242,13 +243,13 @@ namespace GolfApplication.Data
             }
         }
 
-        public static string generateOTP(int OTPValue, string email, string type)
+        public static string generateOTP(int OTPValue, [FromBody]GenOTP otp)
         {
 
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@OTPValue", OTPValue));
-            parameters.Add(new SqlParameter("@email", email));
-            parameters.Add(new SqlParameter("@type", type));
+            parameters.Add(new SqlParameter("@email", otp.email));
+            parameters.Add(new SqlParameter("@type", otp.type));
 
             try
             {

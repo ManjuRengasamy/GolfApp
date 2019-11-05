@@ -75,7 +75,7 @@ namespace GolfApplication.Data
             }
         }
 
-        public static DataTable selectTeamById(int teamId)
+        public static DataSet selectTeamById(int teamId)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter("@teamId", teamId));
@@ -83,9 +83,9 @@ namespace GolfApplication.Data
             try
             {
                 string ConnectionString = Common.GetConnectionString();
-                using (DataTable dt = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "spSelectTeamById", parameters.ToArray()).Tables[0])
+                using (DataSet ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "spSelectTeamById", parameters.ToArray()))
                 {
-                    return dt;
+                    return ds;
                 }
             }
             catch (Exception e)

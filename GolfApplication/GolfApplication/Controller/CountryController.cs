@@ -15,7 +15,7 @@ namespace GolfApplication.Controller
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class CountryController : ControllerBase
     {
         #region GetCountryList

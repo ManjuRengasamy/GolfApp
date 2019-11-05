@@ -68,6 +68,18 @@ namespace GolfApplication.Models
        public string type { get; set; }
     }
 
+    public class updatePassword
+    {
+        public int OTPValue { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
+    }
+
+    public class GenOTP
+    { 
+        public string email { get; set; }
+        public string type { get; set; }
+    }
 
 
     class Global
