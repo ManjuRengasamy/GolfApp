@@ -11,6 +11,7 @@ namespace GolfApplication.Models
     {
         public string email { get; set; }
         public string password { get; set; }
+        public int userTypeid { get; set; }
     }
 
     public class UserType
@@ -47,6 +48,7 @@ namespace GolfApplication.Models
 
     public class getUser : createUser
     {
+        public string userType { get; set; }
         public string userCreatedDate { get; set; }
         public string userUpdatedDate { get; set; }
         public string passwordUpdatedDate { get; set; }
@@ -58,6 +60,15 @@ namespace GolfApplication.Models
     {
         public string userType { get; set; }
     }
+
+    public class otpVerify
+    {
+       public int OTPValue { get; set; }
+       public string email { get; set; }
+       public string type { get; set; }
+    }
+
+
 
     class Global
     {

@@ -99,7 +99,15 @@ namespace GolfApplication.Controller
                     }
                     else
                     {
-                        return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row.ToString() } });
+                        if (row.Contains("UNIQUE KEY constraint") == true)
+                        {
+                            return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = "Email Id is already exists" } });
+                        }
+                        else
+                        {
+                            return StatusCode((int)HttpStatusCode.Forbidden, new { error = new { message = row.ToString() } });
+                        }
+                        
                     }
 
                 }
@@ -110,8 +118,15 @@ namespace GolfApplication.Controller
             }
             catch (Exception e)
             {
-                string SaveErrorLog = Data.Common.SaveErrorLog("createUser", e.Message);
-                return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
+                if (e.Message.Contains("UNIQUE KEY constraint") == true)
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = "Email Id is already exists" } });
+                }
+                else
+                {
+                    string SaveErrorLog = Data.Common.SaveErrorLog("createUser", e.Message);
+                    return StatusCode((int)HttpStatusCode.InternalServerError, new { error = new { message = e.Message } });
+                }
             }
         }
 
@@ -363,18 +378,34 @@ namespace GolfApplication.Controller
         {
             try
             {
-                Random generator = new Random();
-                int OTPValue = generator.Next(0, 999999);
+                string res = "";
+                //Random generator = new Random();
+                //int OTPValue = generator.Next(0, 999999);
+
+                int OTPValue = Common.GenerateOTP();
 
                 Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
                 Match match = regex.Match(email);
-                if (match.Success)
+                if(type == "" || type == "string")
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a type" } });
+                }
+                else if (match.Success)
                 {
                     string row = Data.User.generateOTP(OTPValue, email, type);
 
                     if (row == "Success")
                     {
-                        return StatusCode((int)HttpStatusCode.OK, "Generated Successfully");
+                        res = Common.SendOTP(email, type, OTPValue);
+                        if (res == "Mail sent successfully.")
+                        {
+                            return StatusCode((int)HttpStatusCode.OK, "OTP Generated and sent Successfully"); //result = "Mail sent successfully.";
+                        }
+                        else
+                        {
+                            return StatusCode((int)HttpStatusCode.OK, "OTP Generated, mail not sent Successfully");
+                        }
+                        
                     }
                     else
                     {
@@ -400,15 +431,23 @@ namespace GolfApplication.Controller
         #region verifyOTP
         [HttpPut, Route("verifyOTP")]
         [AllowAnonymous]
-        public IActionResult verifyOTP(int OTPValue, string email, string type)
+        public IActionResult verifyOTP([FromBody]otpVerify otp)
         {
             try
             {
                 Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                Match match = regex.Match(email);
-                if (match.Success)
+                Match match = regex.Match(otp.email);
+                if (otp.OTPValue <= 0)
                 {
-                    string row = Data.User.verifyOTP(OTPValue, email, type);
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter OTP Value" } });
+                }
+                else if (otp.type == "" || otp.type == "string")
+                {
+                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter a type" } });
+                }
+                else if (match.Success)
+                {
+                    string row = Data.User.verifyOTP(otp);
 
                     if (row == "OTP Verified")
                     {

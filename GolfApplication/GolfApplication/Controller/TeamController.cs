@@ -14,7 +14,7 @@ namespace GolfApplication.Controller
     [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
 
     public class TeamController : ControllerBase
     {
@@ -32,10 +32,10 @@ namespace GolfApplication.Controller
                 //{
                 //    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter teamIcon" } });
                 //}
-                else if (team.startingHole < 0 || team.startingHole == null)
-                {
-                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter startingHole" } });
-                }
+                //else if (team.startingHole < 0 || team.startingHole == null)
+                //{
+                //    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter startingHole" } });
+                //}
                 else if (team.createdBy < 0 || team.createdBy == null)
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter createdBy" } });
@@ -81,10 +81,10 @@ namespace GolfApplication.Controller
                 {
                     return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter teamId" } });
                 }
-                else if (updateteam.teamName == "" || updateteam.teamName == null)
-                {
-                    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter teamName" } });
-                }
+                //else if (updateteam.teamName == "" || updateteam.teamName == null)
+                //{
+                //    return StatusCode((int)HttpStatusCode.BadRequest, new { error = new { message = "Please enter teamName" } });
+                //}
                 else
                 {
                     int row = Data.Team.UpdateTeam(updateteam);
@@ -194,8 +194,8 @@ namespace GolfApplication.Controller
                     {
                         updateTeam team = new updateTeam();
 
-                        team.teamId = (int)dt.Rows[i]["teamId"];
-                        team.scoreKeeperID = (int)dt.Rows[i]["scoreKeeperID"];
+                        team.teamId = (dt.Rows[i]["teamId"] == DBNull.Value ? 0 : (int)dt.Rows[i]["teamId"]);
+                        team.scoreKeeperID = (dt.Rows[i]["scoreKeeperID"] == DBNull.Value ? 0 : (int)dt.Rows[i]["scoreKeeperID"]); 
                         team.teamName = (dt.Rows[i]["teamName"] == DBNull.Value ? "" : dt.Rows[i]["teamName"].ToString());
                         team.teamIcon = (dt.Rows[i]["teamIcon"] == DBNull.Value ? "" : dt.Rows[i]["teamIcon"].ToString());
                         team.CreatedOn = (dt.Rows[i]["CreatedOn"] == DBNull.Value ? "" : dt.Rows[i]["CreatedOn"].ToString());

@@ -204,7 +204,8 @@ namespace GolfApplication.Data
                 var encryptPassword = Common.EncryptData(userlogin.password);
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter("@Email", userlogin.email));
-                parameters.Add(new SqlParameter("@Password", encryptPassword));
+                parameters.Add(new SqlParameter("@Password", encryptPassword)); 
+                    parameters.Add(new SqlParameter("@userTypeid", userlogin.userTypeid));
 
                 DataSet ds = new DataSet();
                 using (ds = SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure, "spLogin", parameters.ToArray()))
@@ -263,13 +264,13 @@ namespace GolfApplication.Data
             }
         }
 
-        public static string verifyOTP(int OTPValue, string email, string type)
+        public static string verifyOTP([FromBody]otpVerify otp)
         {
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@OTPValue", OTPValue));
-            parameters.Add(new SqlParameter("@email", email));
-            parameters.Add(new SqlParameter("@type", type));
+            parameters.Add(new SqlParameter("@OTPValue", otp.OTPValue));
+            parameters.Add(new SqlParameter("@email", otp.email));
+            parameters.Add(new SqlParameter("@type", otp.type));
 
             try
             {

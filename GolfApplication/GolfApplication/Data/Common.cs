@@ -66,7 +66,11 @@ namespace GolfApplication.Data
         {
             try
             {
-                var FileURL = AzureStorage.UploadImage(file, DateTime.Now + file.FileName, "videosandimages").Result;  //+ "." + file.ContentType
+                string[] strFilename = file.FileName.Split('.');
+
+                string Filename = strFilename[0] + "_" + DateTime.Now.ToString("dd'-'MM'-'yyyy'-'HH'-'mm'-'ss") + "." + strFilename[1];
+
+                var FileURL = AzureStorage.UploadImage(file, Filename, "videosandimages").Result;  //+ "." + file.ContentType
                 return FileURL;
             }
             catch (Exception e)
@@ -154,5 +158,53 @@ namespace GolfApplication.Data
         }
         #endregion
         
+        #region GenerateOTP
+        public static int GenerateOTP()
+        {
+            try
+            {
+                Random generator = new Random();
+                int OTPValue = generator.Next(0, 999999);
+                return OTPValue;
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+        #endregion
+
+        #region SendOTPViaEmail
+        public static string SendOTP(string emailid, string Type, int OTPValue)
+        {
+            try
+            {
+                string res = "";
+                var result = "";
+                
+                res = EmailSendGrid.Mail("chitrasubburaj30@gmail.com", emailid, "OTP Verification", "Hello, your OTP is " + OTPValue + " and for verify type is '" + Type + "' ").Result; //and it's expiry time is 5 minutes.
+                if (res == "Accepted")
+                {
+                    result = "Mail sent successfully.";
+                }
+                else
+                {
+                    result = "Bad Request";
+                }
+
+                    return result;
+                
+            }
+
+            catch (Exception e)
+            {
+                string SaveErrorLog = Data.Common.SaveErrorLog("SendOTP", e.Message.ToString());
+
+                throw e;
+            }
+        }
+
+
+        #endregion
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using GolfApplication.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace GolfApplication
@@ -28,14 +31,23 @@ namespace GolfApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.Configure<CookiePolicyOptions>(options =>
-            //{
-            //    // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-            //    options.CheckConsentNeeded = context => true;
-            //    options.MinimumSameSitePolicy = SameSiteMode.None;
-            //});
+            //For JWTAuthentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
 
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //for Session
@@ -69,6 +81,8 @@ namespace GolfApplication
                     });
 
             });
+
+           
             services.Configure<MvcOptions>(options =>
             {
                 options.Filters.Add(new CorsAuthorizationFilterFactory("AllowAll"));
@@ -92,16 +106,15 @@ namespace GolfApplication
                     Name = "Authorization",
                     Type = "apiKey"
                 });
-                // c.OperationFilter<SecurityRequirementsOperationFilter>();
-               c.OperationFilter<FormFileSwaggerFilter>();
-               // c.OperationFilter<AddFileParamTypesOperationFilter>();
-              //  c.OperationFilter<MyCorp.Swashbuckle.FormFileSwaggerFilter<MyCorp.Attr.ValidateMimeMultipartContentFilter>>();
-
-
-
+                
                 c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
                 { "Bearer", Enumerable.Empty<string>() },
                 });
+
+                // c.OperationFilter<SecurityRequirementsOperationFilter>();
+                c.OperationFilter<FormFileSwaggerFilter>();
+                // c.OperationFilter<AddFileParamTypesOperationFilter>();
+                //  c.OperationFilter<MyCorp.Swashbuckle.FormFileSwaggerFilter<MyCorp.Attr.ValidateMimeMultipartContentFilter>>();
             });
 
         }
@@ -119,6 +132,10 @@ namespace GolfApplication
                 app.UseHsts();
             }
 
+            //For JWTAuthentication
+            app.UseAuthentication();
+            app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -127,12 +144,13 @@ namespace GolfApplication
 
             app.UseSession();
 
-            app.UseSwagger();
+            app.UseSwagger();                        
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Golf");
             });
-
+            app.UseAuthentication();
 
         }
     }

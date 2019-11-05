@@ -3156,6 +3156,18 @@
           }
         }
       },
+      "Sendgrid/9.12.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/SendGrid.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/SendGrid.dll": {}
+        }
+      },
       "Swashbuckle.AspNetCore/4.0.1": {
         "type": "package",
         "dependencies": {
@@ -8398,6 +8410,26 @@
         "version.txt"
       ]
     },
+    "Sendgrid/9.12.0": {
+      "sha512": "KTRdZP2h83yaa96vSC0jeOfHBfZuHjWaFfqoO4dW+0+ayLfGw7vqvrfS+VXLu9vpRvrvlYXJ5yD4+vlFIGNqBg==",
+      "type": "package",
+      "path": "sendgrid/9.12.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net452/SendGrid.dll",
+        "lib/net452/SendGrid.pdb",
+        "lib/net452/SendGrid.xml",
+        "lib/netstandard1.3/SendGrid.dll",
+        "lib/netstandard1.3/SendGrid.pdb",
+        "lib/netstandard1.3/SendGrid.xml",
+        "lib/netstandard2.0/SendGrid.dll",
+        "lib/netstandard2.0/SendGrid.pdb",
+        "lib/netstandard2.0/SendGrid.xml",
+        "sendgrid.9.12.0.nupkg.sha512",
+        "sendgrid.nuspec"
+      ]
+    },
     "Swashbuckle.AspNetCore/4.0.1": {
       "sha512": "k8TzWTpjwO+4xXsMaaAsAPAdYKyM5wuRvSP+ZmgtyXwhW45ChBVq3xdVJ8Tz+hQ0ziBZSh5p6r2dkRN6SyasVA==",
       "type": "package",
@@ -13075,6 +13107,7 @@
       "Microsoft.NETCore.App >= 2.1.0",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 2.1.1",
       "NLog >= 4.6.7",
+      "Sendgrid >= 9.12.0",
       "Swashbuckle.AspNetCore >= 4.0.1"
     ]
   },
@@ -13154,6 +13187,10 @@
           "NLog": {
             "target": "Package",
             "version": "[4.6.7, )"
+          },
+          "Sendgrid": {
+            "target": "Package",
+            "version": "[9.12.0, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
